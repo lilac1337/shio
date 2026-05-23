@@ -1,31 +1,32 @@
 #include "input.h"
 
-#include "shio.h"
+#include <stdlib.h>
+
 #include "terminal.h"
 
-void movecursor(int32_t k) {
+void movecursor(i32 k) {
     switch (k) {
     case ARROW_LEFT:
-        if (c.cx != 0)
-            --c.cx;
+        if (c.cur.x != 0)
+            --c.cur.x;
         break;
     case ARROW_RIGHT:
-        if (c.cx != c.sc - 1)
-            ++c.cx;
+        if (c.cur.x != c.ws.c - 1)
+            ++c.cur.x;
         break;
     case ARROW_UP:
-        if (c.cy != 0)
-            --c.cy;
+        if (c.cur.y != 0)
+            --c.cur.y;
         break;
     case ARROW_DOWN:
-        if (c.cy != c.sr - 1)
-            ++c.cy;
+        if (c.cur.y != c.ws.r - 1)
+            ++c.cur.y;
         break;
     }
 }
 
 void processkeypress() {
-    int32_t ch = readkey();
+    i32 ch = readkey();
 
     switch (ch) {
     case CTRL_KEY('q'):
@@ -35,14 +36,22 @@ void processkeypress() {
         exit(0);
         break;
 
+    case HOME_KEY:
+        c.cur.x = 0;
+        break;
+
+    case END_KEY:
+        c.cur.x = c.ws.c - 1;
+        break;
+
     case PAGE_UP: {
-        int32_t t = c.cy + 1;
+        i32 t = c.cur.y + 1;
         while (--t)
             movecursor(ARROW_UP);
         break;
     }
     case PAGE_DOWN: {
-        int32_t t = c.sr - c.cy;
+        i32 t = c.ws.r - c.cur.y;
         while (--t)
             movecursor(ARROW_DOWN);
         break;

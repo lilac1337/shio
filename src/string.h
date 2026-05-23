@@ -1,5 +1,7 @@
-#ifndef STRING_H
-#define STRING_H
+#ifndef SHIO_STRING_H
+#define SHIO_STRING_H
+
+#include "shio.h"
 
 #include <malloc.h>
 #include <memory.h>

@@ -1,7 +1,8 @@
-#ifndef TERMINAL_H
-#define TERMINAL_H
+#ifndef SHIO_TERMINAL_H
+#define SHIO_TERMINAL_H
 
-#include <stdint.h>
+#include "shio.h"
+
 #include <stdio.h>
 #include <unistd.h>
 
@@ -15,15 +16,15 @@
 #define VT100EL "\x1b[K" // erase in line, 3 bytes
 
 // erase in display
-static inline int32_t v100ed() { return write(STDOUT_FILENO, "\x1b[2J", 4); }
+static inline i32 v100ed() { return write(STDOUT_FILENO, "\x1b[2J", 4); }
 
 // cursor position
-static inline int32_t v100cup() { return write(STDOUT_FILENO, "\x1b[H", 3); }
+static inline i32 v100cup() { return write(STDOUT_FILENO, "\x1b[H", 3); }
 
 // cursor position report
-static inline int32_t v100cpr() { return write(STDOUT_FILENO, "\x1b[6n", 4); }
+static inline i32 v100cpr() { return write(STDOUT_FILENO, "\x1b[6n", 4); }
 
-static inline int32_t v100placecursor(int32_t x, int32_t y) {
+static inline i32 v100placecursor(i32 x, i32 y) {
     char buf[16];
 
     size_t b = sprintf(buf, "\x1b[%dC\x1b%dB", x, y);
@@ -33,8 +34,8 @@ static inline int32_t v100placecursor(int32_t x, int32_t y) {
 void die(const char *s);
 void disablerawmode();
 void enablerawmode();
-int32_t readkey();
-int32_t getcursorpos(int32_t *r, int32_t *c);
-int32_t getwindowsize(int32_t *r, int32_t *c);
+i32 readkey();
+errc getcursorpos(wsize *ews);
+errc getwindowsize(wsize *ews);
 
 #endif

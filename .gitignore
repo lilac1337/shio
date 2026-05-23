@@ -1,6 +1,8 @@
 .cache*/
 compile_commands.json
 src/*.o
+src/*.d
 src/.gdb_history
 *~
 src/*~
+shio

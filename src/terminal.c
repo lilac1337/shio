@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <sys/ioctl.h>
 
-#include "shio.h"
+#include "input.h"
 
 // v100
 
@@ -15,14 +15,15 @@
 #define VT100RM25 "\x1b[?25l" // reset mode(25), show cursor, 6 bytes
 #define VT100EL "\x1b[K" // erase in line, 3 bytes
 
-
-// terminal
-
-void die(const char *s) {
+[[noreturn]] void die(const char *s) {
     v100ed();
     v100cup();
+
+    if (errno)
+        perror(s);
+    else
+        fprintf(stderr, "%s\n", s);
     
-    perror(s);
     exit(1);
 }
 
@@ -52,8 +53,8 @@ void enablerawmode() {
     atexit(disablerawmode);
 }
 
-int32_t readkey() {
-    int32_t nread;
+i32 readkey() {
+    i32 nread;
     char c;
 
     while ((nread = read(STDIN_FILENO, &c, 1)) != 1) {
@@ -65,18 +66,28 @@ int32_t readkey() {
     if (c == '\x1b') {
         char seq[3];
 
-        if (read(STDIN_FILENO, &seq[0], 1) != 1) return '\x1b';
-        if (read(STDIN_FILENO, &seq[1], 1) != 1) return '\x1b';
+        if (read(STDIN_FILENO, &seq[0], 1) != 1)
+            return '\x1b';
+        if (read(STDIN_FILENO, &seq[1], 1) != 1)
+            return '\x1b';
     
         // handle arrow keys & page up/down
         if (seq[0] == '[') {
             if (seq[1] >= '0' && seq[1] <= '9') {
-                if (read(STDIN_FILENO, &seq[2], 1) != 1) return '\x1b';
-                
+                if (read(STDIN_FILENO, &seq[2], 1) != 1)
+                    return '\x1b';
+
+                // these special characters send <esc>[ then a number, and then ~
+                // so we check for the ~ and then check which number it was
                 if (seq[2] == '~') {
                     switch (seq[1]) {
+                    case '1': return HOME_KEY;
+                    case '3': return DEL_KEY;
+                    case '4': return END_KEY;
                     case '5': return PAGE_UP;
                     case '6': return PAGE_DOWN;
+                    case '7': return HOME_KEY;
+                    case '8': return END_KEY;
                     }
                 }
             }
@@ -86,9 +97,22 @@ int32_t readkey() {
             case 'B': return ARROW_DOWN;
             case 'C': return ARROW_RIGHT;
             case 'D': return ARROW_LEFT;
+            case 'H': return HOME_KEY;
+            case 'F': return END_KEY;
             }
         }
+
+        if (seq[0] == 'O') {
+            switch (seq[1]) {
+            case 'H': return HOME_KEY;
+            case 'F': return END_KEY;
+            }
+        }
+
+        return '\x1b';
     }
+
+    
 
     // emacs-like movement
     switch (c) {
@@ -101,7 +125,7 @@ int32_t readkey() {
     return c;
 }
 
-int32_t getcursorpos(int32_t *r, int32_t *c) {
+errc getcursorpos(wsize *ews) {
     char buf[32];
     uint32_t i = 0;
     
@@ -118,22 +142,22 @@ int32_t getcursorpos(int32_t *r, int32_t *c) {
 
     if (buf[0] != '\x1b' || buf[1] != '[')
         return -1;
-    if (sscanf(&buf[2], "%d;%d", r, c) != 2)
+    if (sscanf(&buf[2], "%" SCNu32 ";%" SCNu32, &ews->r, &ews->c) != 2)
         return -1;
 
     return 0;
 }
 
-int32_t getwindowsize(int32_t *r, int32_t *c) {
+errc getwindowsize(wsize *ews) {
     struct winsize ws;
 
     if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0) {
         if (write(STDOUT_FILENO, "\x1b[999C\x1b[999B", 12) != 12) return -1;
-        return getcursorpos(r, c);
+        return getcursorpos(ews);
     }
 
-    *c = ws.ws_col;
-    *r = ws.ws_row;
-
+    ews->c = ws.ws_col;
+    ews->r = ws.ws_row;
+    
     return 0;
 }
