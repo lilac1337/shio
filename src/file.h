@@ -3,6 +3,11 @@
 
 #include "shio.h"
 
-void open(char *f);
+#include <stdbool.h>
+#include <sys/types.h>
+
+char *rows2string(ssize_t *buflen, bool trail);
+void fileopen(const char *f);
+void save();
 
 #endif

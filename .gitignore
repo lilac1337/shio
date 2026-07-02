@@ -6,3 +6,5 @@ src/.gdb_history
 *~
 src/*~
 shio
+shio.i64
+test*

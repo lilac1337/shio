@@ -6,6 +6,9 @@
 
 void scroll();
 void drawrows(sv *txt);
+void drawstatus(sv *txt);
+void drawmessage(sv *txt);
 void refreshscreen();
+void setstatus(const char *fmt, ...);
 
 #endif

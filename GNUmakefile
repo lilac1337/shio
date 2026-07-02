@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -std=gnu23 -O2 -Wall -MMD -MP
+CFLAGS = -std=gnu23 -O0 -Wall -Wextra -Wpedantic -Werror -Wwrite-strings -Wconversion -Wsign-conversion -Wshadow -Wundef -Wdouble-promotion -Wformat=2 -Wnull-dereference -Wstrict-prototypes -Wmissing-prototypes -Wimplicit-fallthrough -Wcast-align -Wcast-qual -Wmissing-declarations -Wredundant-decls -Wbad-function-cast -Wlogical-op -Wduplicated-cond -Wduplicated-branches -Wformat-truncation -Wstringop-overflow -fanalyzer -g3 -fsanitize=address,undefined -fno-omit-frame-pointer -MMD -MP
 
 SRC_DIR = src
 
@@ -21,6 +21,3 @@ $(SRC_DIR)/%.o: $(SRC_DIR)/%.c
 
 clean:
 	rm -f $(SRC_DIR)/*.o $(SRC_DIR)/*.d $(TARGET)
-
-#main: src/main.c
-#	$(CC) $(CFLAGS) src/main.c -o xc

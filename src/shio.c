@@ -7,14 +7,23 @@
 config c;
 
 void init() {
-    c.cur.x = 0;
-    c.cur.y = 0;
-    c.roff = 0;
-    c.nrows = 0;
+    c.cur.x = 0u;
+    c.cur.y = 0u;
+    c.roff = 0u;
+    c.coff = 0u;
+    c.nrows = 0u;
+    c.rx = 0u;
+    c.dirty = 0u;
     c.r = NULL;
+    c.fn = NULL;
+    c.status[0] = '\0';
+    c.time = 0;
+    c.syn = NULL;
     
     if (getwindowsize(&c.ws) == -1)
         die("getwindowsize in init");
+
+    c.ws.r -= 2; // make room for status bar
 }
 
 int main(int argc, char *argv[]) {
@@ -22,9 +31,11 @@ int main(int argc, char *argv[]) {
     init();
 
     if (argc >= 2)
-        open(argv[1]);
+        fileopen(argv[1]);
 
-    while  (1) {
+    setstatus("help: C-x = save, C-q = quit, C-s = search");
+    
+    while (true) {
         refreshscreen();
         processkeypress();
     }    

@@ -11,26 +11,39 @@
 #define _GNU_SOURCE
 #endif
 
+#include <stdbool.h>
 #include <stddef.h>
 #include <termios.h>
+#include <time.h>
 
+#include "filetypes.h"
 #include "types.h"
 
 #define LIKELY(x) __builtin_expect(!!(x), 1)
 #define UNLIKELY(x) __builtin_expect(!!(x), 0)
 
+#define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
+#define MAX(X, Y) (((X) > (Y)) ? (X) : (Y))
+
 #define CTRL_KEY(k) ((k) & 0x1f)
 
 #define SHIO_VERSION "0.0.1"
+#define SHIO_TAB_STOP 4
+#define SHIO_QUIT_TIMES 3
 
 typedef struct {
+    u32 idx;
     size_t size;
+    size_t rsize;
     char *chars;
+    char *render;
+    unsigned char *hl;
+    bool hlmlcmt; // multi-line comment in row
 } row;
 
 typedef struct {
-    i32 x;
-    i32 y;
+    u32 x;
+    u32 y;
 } cursor;
 
 typedef struct {
@@ -39,14 +52,23 @@ typedef struct {
 } wsize;
 
 typedef struct {
-    cursor cur;
-    wsize ws;
-    u32 roff;
-    i32 nrows;
-    row *r;
-    struct termios origtios;
+    cursor cur; // cursor pos
+    wsize ws; // window size
+    u32 roff; // row offset
+    u32 coff; // column offset
+    u32 nrows; // num rows
+    u32 rx; // pos in row
+    u32 dirty; // file has been modified
+    row *r; // row array
+    char *fn; // file name
+    char status[80];
+    time_t time;
+    syntax *syn; // syntax
+    struct termios origtios; // state of termios for exiting
 } config;
 
 extern config c;
+
+void init();
 
 #endif

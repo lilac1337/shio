@@ -33,6 +33,35 @@ typedef uint_least16_t ul16;
 typedef uint_least32_t ul32;
 typedef uint_least64_t ul64;
 
+typedef float f32;
+typedef double f64;
+
 typedef i32 errc;
+
+enum keys {
+    BACKSPACE = 127,
+    ARROW_LEFT = 0xB00B1E5,
+    ARROW_RIGHT,
+    ARROW_UP,
+    ARROW_DOWN,
+    DEL_KEY,
+    HOME_KEY,
+    END_KEY,
+    PAGE_UP,
+    PAGE_DOWN
+};
+
+enum highlight : u32 {
+    HL_NORMAL = 0,
+    HL_COMMENT,
+    HL_MLCOMMENT,
+    HL_SPECIAL,
+    HL_KEYWORD1,
+    HL_KEYWORD2,
+    HL_STRING,
+    HL_NUMBER,
+    HL_MATCH
+        //HL_LINENUM
+};
 
 #endif

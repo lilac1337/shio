@@ -3,8 +3,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <sys/ioctl.h>
-
-#include "input.h"
+#include <termios.h>
 
 // v100
 
@@ -40,10 +39,10 @@ void enablerawmode() {
     
     c.origtios = tios;
 
-    tios.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
-    tios.c_oflag &= ~(OPOST);
-    tios.c_cflag |= ~(CS8);
-    tios.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
+    tios.c_iflag &= (tcflag_t)~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
+    tios.c_oflag &= (tcflag_t)~(OPOST);
+    tios.c_cflag |= (tcflag_t)(CS8);
+    tios.c_lflag &= (tcflag_t)~(ECHO | ICANON | IEXTEN | ISIG);
     tios.c_cc[VMIN] = 0;
     tios.c_cc[VTIME] = 1;
 
@@ -54,27 +53,27 @@ void enablerawmode() {
 }
 
 i32 readkey() {
-    i32 nread;
-    char c;
+    ssize_t nread;
+    char ch;
 
-    while ((nread = read(STDIN_FILENO, &c, 1)) != 1) {
-        if (nread == -1 && errno != EAGAIN)
+    while ((nread = read(STDIN_FILENO, &ch, 1ul)) != 1l) {
+        if (nread == -1l && errno != EAGAIN)
             die("read in readkey");
     }
 
     // if char starts with escape seq
-    if (c == '\x1b') {
+    if (ch == '\x1b') {
         char seq[3];
 
-        if (read(STDIN_FILENO, &seq[0], 1) != 1)
+        if (read(STDIN_FILENO, &seq[0], 1) != 1l)
             return '\x1b';
-        if (read(STDIN_FILENO, &seq[1], 1) != 1)
+        if (read(STDIN_FILENO, &seq[1], 1) != 1l)
             return '\x1b';
     
         // handle arrow keys & page up/down
         if (seq[0] == '[') {
             if (seq[1] >= '0' && seq[1] <= '9') {
-                if (read(STDIN_FILENO, &seq[2], 1) != 1)
+                if (read(STDIN_FILENO, &seq[2], 1ul) != 1l)
                     return '\x1b';
 
                 // these special characters send <esc>[ then a number, and then ~
@@ -112,17 +111,17 @@ i32 readkey() {
         return '\x1b';
     }
 
-    
-
     // emacs-like movement
-    switch (c) {
+    switch (ch) {
     case CTRL_KEY('p'): return ARROW_UP;
     case CTRL_KEY('n'): return ARROW_DOWN;
     case CTRL_KEY('f'): return ARROW_RIGHT;
     case CTRL_KEY('b'): return ARROW_LEFT;
+    case CTRL_KEY('a'): return HOME_KEY;
+    case CTRL_KEY('e'): return END_KEY;
     }
 
-    return c;
+    return ch;
 }
 
 errc getcursorpos(wsize *ews) {

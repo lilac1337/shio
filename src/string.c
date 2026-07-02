@@ -1,17 +1,17 @@
 #include "string.h"
 
-void svappend(sv *sv, const char *s, size_t len) {
-    char *new = realloc(sv->s, sv->len + len);
+void svappend(sv *s, const char *str, size_t len) {
+    char *new = realloc(s->s, s->len + len);
 
     if (new == NULL)
         return;
-    memcpy(&new[sv->len], s, len);
-    sv->s = new;
-    sv->len += len;
+    memcpy(&new[s->len], str, len);
+    s->s = new;
+    s->len += len;
 }
 
-void svfree(sv *sv) {
-    free(sv->s);
-    sv->s = NULL;
-    sv->len = 0;
+void svfree(sv *s) {
+    free(s->s);
+    s->s = NULL;
+    s->len = 0;
 }
