@@ -1,7 +1,7 @@
 * shio
-a (mostly) faithful reimplementation of the kilo text editor, meant to be more similar to emacs
-eventually it will diverge more, but it's pretty much useless as of now, and i wouldn't recommend opening anything important in it due to the potential for data loss
-does not support windows afaik, bsd has worked in my testing, and it's made for linux
+a (mostly) faithful reimplementation of the kilo text editor, meant to be more similar to emacs.
+eventually it will diverge more, but it's pretty much useless as of now, and i wouldn't recommend opening anything important in it due to the potential for data loss.
+does not support windows afaik, bsd has worked in my testing, and it's made for linux.
 * building
 #+BEGIN_SRC shell
 git clone https://github.com/lilac1337/shio.git
@@ -9,5 +9,5 @@ cd shio
 make
 #+END_SRC
 * s/o
-[[https://github.com/antirez/kilo]][the kilo editor]
-[[https://viewsourcecode.org/snaptoken/kilo/index.html]][build your own editor (based on kilo)]
+[[https://github.com/antirez/kilo]](the kilo editor)
+[[https://viewsourcecode.org/snaptoken/kilo/index.html]](build your own editor (based on kilo))
