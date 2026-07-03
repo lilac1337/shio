@@ -5,6 +5,7 @@ src/*.d
 src/.gdb_history
 *~
 src/*~
+src/*#*
 shio
 shio.i64
 test*
