@@ -86,7 +86,7 @@ void drawrows(sv *txt) {
         size_t j;
 
         // experimental line number code
-        drawlinenum(txt, y + 1u);
+        drawlinenum(txt, y + c.roff + 1u);
         
         for (j = 0; j < len; ++j) {
             if (iscntrl(ch[j])) {
