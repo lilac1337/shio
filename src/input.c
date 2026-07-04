@@ -157,6 +157,7 @@ void processkeypress() {
     // a static var with last keypress for C-x should be good enough for basic
     // emacs-like chords, it was unironically revealed to me in a dream
     static u32 qt = SHIO_QUIT_TIMES;
+    static i32 lch = 0;
     
     i32 ch = readkey();
 
@@ -165,11 +166,16 @@ void processkeypress() {
         editorinsertnl();
         break;
         
-    case CTRL_KEY('q'):
+    case CTRL_KEY('c'):
+        if (lch != CTRL_KEY('x') && qt >= SHIO_QUIT_TIMES) {
+            return;
+        }
+        
         if (c.dirty && qt > 0) {
-            setstatus("warning: file has unsaved changes, press C-q %" PRIu32 " times to quit", qt);
+            setstatus("warning: file has unsaved changes, press C-c %" PRIu32 " times to quit", qt);
             --qt;
 
+            lch = ch;
             return;
         }
         
@@ -180,7 +186,13 @@ void processkeypress() {
         break;
 
     case CTRL_KEY('x'):
-        save();
+        setstatus("C-x-");
+
+        break;
+
+    case CTRL_KEY('g'):
+        qt = SHIO_QUIT_TIMES;
+        setstatus("cancelled");
         break;
 
     case HOME_KEY:
@@ -194,6 +206,12 @@ void processkeypress() {
         break;
 
     case CTRL_KEY('s'):
+        if (lch == CTRL_KEY('x')) {
+            save();
+            
+            break;
+        }
+        
         search();
         break;
 
@@ -239,4 +257,5 @@ void processkeypress() {
     }
 
     qt = SHIO_QUIT_TIMES;
+    lch = ch;
 }
