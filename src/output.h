@@ -5,6 +5,7 @@
 #include "string.h"
 
 void scroll();
+void drawlinenum(sv *txt, u32 ln);
 void drawrows(sv *txt);
 void drawstatus(sv *txt);
 void drawmessage(sv *txt);

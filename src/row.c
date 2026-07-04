@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void updatelinenum() {
+void updatelinenumoffset() {
     c.lno = (u32)snprintf(NULL, 0, "%" PRIu32, c.nrows + 1u);
 }
 
@@ -124,7 +124,7 @@ void insertrow(u32 at, const char *s, size_t len) {
     c.r[at].hlmlcmt = false;
 
     updaterow(&c.r[at]);
-    updatelinenum();
+    updatelinenumoffset();
 
     ++c.nrows;
     ++c.dirty;
@@ -154,7 +154,7 @@ void delrow(u32 at) {
     for (j = at; j < c.nrows - 1; ++j)
         c.r[j].idx--;
 
-    updatelinenum();
+    updatelinenumoffset();
     
     --c.nrows;
     ++c.dirty;

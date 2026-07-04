@@ -33,6 +33,14 @@ void scroll() {
         c.coff = c.rx - c.ws.c + 1;
 }
 
+void drawlinenum(sv *txt, u32 ln) {
+    char linenum[32];
+    u32 linenumcol = syntax2color(HL_LINENUM);
+    int numlen = snprintf(linenum, sizeof(linenum), "\x1b[%" PRIu32 "m%*" PRIu32 " ", linenumcol, c.lno, ln);
+    svappend(txt, linenum, (size_t)numlen);
+    svappend(txt, VT100COLORDEFAULT, 5);
+}
+
 // TODO: separate this into multiple smaller functions
 void drawrows(sv *txt) {
     u32 y;
@@ -78,11 +86,7 @@ void drawrows(sv *txt) {
         size_t j;
 
         // experimental line number code
-        char linenum[32];
-        u32 linenumcol = syntax2color(HL_LINENUM);
-        int numlen = snprintf(linenum, sizeof(linenum), "\x1b[%" PRIu32 "m%*" PRIu32 " ", linenumcol, c.lno, y + 1u);
-        svappend(txt, linenum, (size_t)numlen);
-        svappend(txt, VT100COLORDEFAULT, 5);
+        drawlinenum(txt, y + 1u);
         
         for (j = 0; j < len; ++j) {
             if (iscntrl(ch[j])) {
