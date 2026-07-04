@@ -14,6 +14,7 @@ void init() {
     c.nrows = 0u;
     c.rx = 0u;
     c.dirty = 0u;
+    c.lno = 0u;
     c.r = NULL;
     c.fn = NULL;
     c.status[0] = '\0';

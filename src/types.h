@@ -60,8 +60,8 @@ enum highlight : u32 {
     HL_KEYWORD2,
     HL_STRING,
     HL_NUMBER,
-    HL_MATCH
-        //HL_LINENUM
+    HL_MATCH,
+    HL_LINENUM
 };
 
 #endif

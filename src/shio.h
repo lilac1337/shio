@@ -59,6 +59,7 @@ typedef struct {
     u32 nrows; // num rows
     u32 rx; // pos in row
     u32 dirty; // file has been modified
+    u32 lno; // line number offset for cur
     row *r; // row array
     char *fn; // file name
     char status[80];

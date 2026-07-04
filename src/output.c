@@ -78,11 +78,11 @@ void drawrows(sv *txt) {
         size_t j;
 
         // experimental line number code
-        /*char linenum[16];
+        char linenum[32];
         u32 linenumcol = syntax2color(HL_LINENUM);
-        int numlen = snprintf(linenum, sizeof(linenum), "\x1b[%" PRIu32 "m%" PRIu32 " ", linenumcol, y + 1u);
+        int numlen = snprintf(linenum, sizeof(linenum), "\x1b[%" PRIu32 "m%*" PRIu32 " ", linenumcol, c.lno, y + 1u);
         svappend(txt, linenum, (size_t)numlen);
-        svappend(txt, VT100COLORDEFAULT, 5);*/
+        svappend(txt, VT100COLORDEFAULT, 5);
         
         for (j = 0; j < len; ++j) {
             if (iscntrl(ch[j])) {
@@ -175,6 +175,16 @@ void drawmessage(sv *txt) {
         svappend(txt, c.status, len);
 }
 
+void drawcursor(sv *txt) {
+    const u32 cy = c.cur.y - c.roff + 1u;
+    const u32 cx = c.rx + c.lno - c.coff + 2u; // i'm not exactly sure why we have to do +2, but it works
+    
+    char buf[32];
+    snprintf(buf, sizeof(buf), "\x1b[%" PRIu32 ";%" PRIu32 "H", cy, cx);
+    
+    svappend(txt, buf, strlen(buf));
+}
+
 void refreshscreen() {
     scroll();
     
@@ -186,10 +196,7 @@ void refreshscreen() {
     drawrows(&txt);
     drawstatus(&txt);
     drawmessage(&txt);
-
-    char buf[32];
-    snprintf(buf, sizeof(buf), "\x1b[%" PRIu32 ";%" PRIu32 "H", (c.cur.y - c.roff) + 1, (c.rx - c.coff) + 1);
-    svappend(&txt, buf, strlen(buf));
+    drawcursor(&txt);
     
     svappend(&txt, VT100SM25, 6);
 

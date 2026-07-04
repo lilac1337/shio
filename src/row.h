@@ -3,6 +3,7 @@
 
 #include "shio.h"
 
+void updatelinenum();
 row *getrow(size_t idx);
 u32 cx2rx(row *r, u32 cx);
 u32 rx2cx(row *r, u32 rx);

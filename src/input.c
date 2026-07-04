@@ -154,6 +154,8 @@ void movecursor(i32 k) {
 }
 
 void processkeypress() {
+    // a static var with last keypress for C-x should be good enough for basic
+    // emacs-like chords, it was unironically revealed to me in a dream
     static u32 qt = SHIO_QUIT_TIMES;
     
     i32 ch = readkey();

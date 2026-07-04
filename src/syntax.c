@@ -173,7 +173,7 @@ u32 syntax2color(u32 hl) {
     case HL_STRING: return 35u;
     case HL_NUMBER: return 31u;
     case HL_MATCH: return 34u;
-        //case HL_LINENUM: return 36u;
+    case HL_LINENUM: return 36u;
     default: return 37u;
     }
 }
