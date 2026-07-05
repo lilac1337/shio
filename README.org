@@ -1,4 +1,5 @@
-* shio
+#+TITLE: shio
+[[./shio.gif]]
 a (mostly) faithful reimplementation of the kilo text editor, meant to be more similar to emacs.
 eventually it will diverge more, but it's pretty much useless as of now, and i wouldn't recommend opening anything important in it due to the potential for data loss.
 does not support windows afaik, bsd has worked in my testing, and it's made for linux.
