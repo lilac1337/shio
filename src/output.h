@@ -6,6 +6,8 @@
 
 void scroll();
 void drawlinenum(sv *txt, u32 ln);
+void drawsyntaxhl(sv *txt, u32 frow, size_t len);
+void drawwelcometxt(sv *txt);
 void drawrows(sv *txt);
 void drawstatus(sv *txt);
 void drawmessage(sv *txt);

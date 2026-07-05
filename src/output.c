@@ -35,10 +35,73 @@ void scroll() {
 
 void drawlinenum(sv *txt, u32 ln) {
     char linenum[32];
-    u32 linenumcol = syntax2color(HL_LINENUM);
+    u32 linenumcol = (ln == c.cur.y + 1u) ? syntax2color(HL_MATCH) : syntax2color(HL_LINENUM);
     int numlen = snprintf(linenum, sizeof(linenum), "\x1b[%" PRIu32 "m%*" PRIu32 " ", linenumcol, c.lno, ln);
     svappend(txt, linenum, (size_t)numlen);
     svappend(txt, VT100COLORDEFAULT, 5);
+}
+
+void drawsyntaxhl(sv *txt, u32 frow, size_t len) {
+    char *ch = &c.r[frow].render[c.coff];
+    u8 *hl = &c.r[frow].hl[c.coff];
+    u32 curcol = HL_NORMAL;
+    size_t j;
+        
+    for (j = 0; j < len; ++j) {
+        if (iscntrl(ch[j])) {
+            char sym = (ch[j] <= 26) ? '@' + ch[j] : '?';
+                
+            svappend(txt, VT100SGR7, 4ul);
+            svappend(txt, &sym, 1);
+            svappend(txt, VT100SGR, 3);
+
+            if (curcol != HL_NORMAL) {
+                char buf[16];
+                int clen = snprintf(buf, sizeof(buf), "\x1b%" PRIu32 "m", curcol);
+                svappend(txt, buf, (size_t)clen);
+            }
+
+            continue;
+        }
+            
+        if (hl[j] == HL_NORMAL) {
+            if (curcol != HL_NORMAL) {
+                svappend(txt, VT100COLORDEFAULT, 5ul);
+                curcol = HL_NORMAL;
+            }
+                
+            svappend(txt, &ch[j], 1ul);
+
+            continue;
+        }
+            
+        u32 color = syntax2color(hl[j]);
+        if (curcol != color) {
+            char buf[16];
+            int clen = snprintf(buf, sizeof(buf), "\x1b[%" PRIu32 "m", color);
+            
+            svappend(txt, buf, (size_t)clen);
+            curcol = color;
+        }
+            
+        svappend(txt, &ch[j], 1ul);
+    }
+}
+
+void drawwelcometxt(sv *txt) {
+    char welcome[80];
+    size_t welcomelen = (size_t)snprintf(welcome, sizeof(welcome), "shio -- version %s", SHIO_VERSION);
+    if (welcomelen > c.ws.c)
+        welcomelen = c.ws.c;
+            
+    size_t pad = (c.ws.c - welcomelen) / 2;
+    if (pad) {
+        svappend(txt, "~", 1);
+        --pad;
+    }
+    while (pad--) svappend(txt, " ", 1);
+
+    svappend(txt, welcome, welcomelen);
 }
 
 // TODO: separate this into multiple smaller functions
@@ -50,19 +113,7 @@ void drawrows(sv *txt) {
 
         if (frow >= c.nrows) {
             if (c.nrows == 0 && y == c.ws.r / 3) {
-                char welcome[80];
-                size_t welcomelen = (size_t)snprintf(welcome, sizeof(welcome), "shio -- version %s", SHIO_VERSION);
-                if (welcomelen > c.ws.c)
-                    welcomelen = c.ws.c;
-            
-                size_t pad = (c.ws.c - welcomelen) / 2;
-                if (pad) {
-                    svappend(txt, "~", 1);
-                    --pad;
-                }
-                while (pad--) svappend(txt, " ", 1);
-
-                svappend(txt, welcome, welcomelen);
+                drawwelcometxt(txt);
             } else {
                 svappend(txt, "~", 1);
             }
@@ -78,55 +129,9 @@ void drawrows(sv *txt) {
         if (len > c.ws.c)
             len = c.ws.c;
 
-        // syntax highlighting stuff
-        
-        char *ch = &c.r[frow].render[c.coff];
-        u8 *hl = &c.r[frow].hl[c.coff];
-        u32 curcol = HL_NORMAL;
-        size_t j;
-
         // experimental line number code
         drawlinenum(txt, y + c.roff + 1u);
-        
-        for (j = 0; j < len; ++j) {
-            if (iscntrl(ch[j])) {
-                char sym = (ch[j] <= 26) ? '@' + ch[j] : '?';
-                
-                svappend(txt, VT100SGR7, 4ul);
-                svappend(txt, &sym, 1);
-                svappend(txt, VT100SGR, 3);
-
-                if (curcol != HL_NORMAL) {
-                    char buf[16];
-                    int clen = snprintf(buf, sizeof(buf), "\x1b%" PRIu32 "m", curcol);
-                    svappend(txt, buf, (size_t)clen);
-                }
-
-                continue;
-             }
-            
-            if (hl[j] == HL_NORMAL) {
-                if (curcol != HL_NORMAL) {
-                    svappend(txt, VT100COLORDEFAULT, 5ul);
-                    curcol = HL_NORMAL;
-                }
-                
-                svappend(txt, &ch[j], 1ul);
-
-                continue;
-            }
-            
-            u32 color = syntax2color(hl[j]);
-            if (curcol != color) {
-                char buf[16];
-                int clen = snprintf(buf, sizeof(buf), "\x1b[%" PRIu32 "m", color);
-            
-                svappend(txt, buf, (size_t)clen);
-                curcol = color;
-            }
-            
-            svappend(txt, &ch[j], 1ul);
-        }
+        drawsyntaxhl(txt, frow, len);
         
         svappend(txt, VT100COLORDEFAULT, 5ul);
         endrow(txt);

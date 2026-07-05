@@ -84,6 +84,7 @@ error:
     return NULL;
 }
 
+// TODO: ideal code is wonky after adding tab support, probably need to do something with r->rsize
 void movecursor(i32 k) {
     static u32 ideal = 0;
     row *r = getrow(c.cur.y);
