@@ -1,5 +1,6 @@
 #include "input.h"
 
+#include "commands.h"
 #include "editor.h"
 #include "file.h"
 #include "output.h"
@@ -240,7 +241,14 @@ void processkeypress() {
         
         break;
     }
-        
+
+    case META_X: {
+        //setstatus("M-x");
+        executecommand();
+
+        break;
+    }
+                
     case ARROW_UP:
     case ARROW_DOWN:
     case ARROW_LEFT:

@@ -1,4 +1,5 @@
 #include "terminal.h"
+#include "types.h"
 
 #include <errno.h>
 #include <stdlib.h>
@@ -67,6 +68,10 @@ i32 readkey() {
 
         if (read(STDIN_FILENO, &seq[0], 1) != 1l)
             return '\x1b';
+
+        if (seq[0] == 'x')
+            return META_X;
+        
         if (read(STDIN_FILENO, &seq[1], 1) != 1l)
             return '\x1b';
     

@@ -48,7 +48,8 @@ enum keys {
     HOME_KEY,
     END_KEY,
     PAGE_UP,
-    PAGE_DOWN
+    PAGE_DOWN,
+    META_X
 };
 
 enum highlight : u32 {
