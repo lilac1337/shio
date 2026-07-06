@@ -49,7 +49,9 @@ enum keys {
     END_KEY,
     PAGE_UP,
     PAGE_DOWN,
-    META_X
+    META_X,
+    META_F,
+    META_B
 };
 
 enum highlight : u32 {

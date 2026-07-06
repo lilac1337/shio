@@ -3,6 +3,7 @@
 #include "commands.h"
 #include "editor.h"
 #include "file.h"
+#include "movement.h"
 #include "output.h"
 #include "row.h"
 #include "search.h"
@@ -246,6 +247,16 @@ void processkeypress() {
         //setstatus("M-x");
         executecommand();
 
+        break;
+    }
+
+    case META_F: {
+        wordfoward();
+        break;
+    }
+
+    case META_B: {
+        wordbackward();
         break;
     }
                 

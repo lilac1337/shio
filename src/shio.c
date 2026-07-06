@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
     if (argc >= 2)
         fileopen(argv[1]);
 
-    setstatus("help: C-x C-s = save, C-x C-c = quit, C-s = search");
+    setstatus("help: C-x C-s = save, C-x C-c = quit, C-s = search, M-x = commands");
     
     while (true) {
         refreshscreen();

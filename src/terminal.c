@@ -69,8 +69,11 @@ i32 readkey() {
         if (read(STDIN_FILENO, &seq[0], 1) != 1l)
             return '\x1b';
 
-        if (seq[0] == 'x')
-            return META_X;
+        switch (seq[0]) {
+        case 'x': return META_X;
+        case 'f': return META_F;
+        case 'b': return META_B;
+        }
         
         if (read(STDIN_FILENO, &seq[1], 1) != 1l)
             return '\x1b';
