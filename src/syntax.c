@@ -5,7 +5,6 @@
 #include "types.h"
 
 #include <ctype.h>
-#include <memory.h>
 #include <stdbool.h>
 #include <stdlib.h>
 

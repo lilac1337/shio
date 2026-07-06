@@ -4,8 +4,8 @@
 #include "file.h"
 #include "output.h"
 
-#include "stdlib.h"
-#include "string.h"
+#include <stdlib.h>
+#include <string.h>
 
 const command commands[] = {{"save", csave}};
 const size_t commandcnt = sizeof(commands) / sizeof(commands[0]);

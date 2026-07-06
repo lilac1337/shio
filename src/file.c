@@ -7,14 +7,13 @@
 #include "terminal.h"
 
 #include <fcntl.h>
-#include <malloc.h>
-#include <memory.h>
 #include <errno.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <unistd.h>
 
 // TODO: trailing \n dialog for EOF
-char *rows2string(ssize_t *buflen, bool trail) {
+char *rows2string(ssize_t *buflen) {
     size_t totlen = 0;
     size_t j;
 
@@ -24,12 +23,16 @@ char *rows2string(ssize_t *buflen, bool trail) {
 
     *buflen = (ssize_t)totlen;
     char *buf = malloc(totlen);
+
+    if (buf == NULL)
+        return NULL;
+    
     char *p = buf;
     
     for (j = 0; j < c.nrows; ++j) {
         memcpy(p, c.r[j].chars, c.r[j].size);
         p += c.r[j].size;
-        if (j != c.nrows || !trail)
+        if (j != c.nrows)
             *p = '\n';
         ++p;
     }
@@ -77,11 +80,14 @@ void save() {
         selectsyntaxhl();
     }
         
-
     ssize_t len;
-    char *buf = rows2string(&len, true);
+    int fd = 0;
+    char *buf = rows2string(&len);
 
-    int fd = open(c.fn, O_RDWR | O_CREAT, 0644);
+    if (buf == NULL)
+        goto error;
+
+    fd = open(c.fn, O_RDWR | O_CREAT, 0644);
 
     if (fd == -1)
         goto error;
@@ -107,9 +113,10 @@ void save() {
 
 error:
     setstatus("couldn't save file %s: %s", c.fn, strerror(errno));
-
+    
     if (fd >= 0)
         close(fd);
-    
-    free(buf);
+
+    if (buf)
+        free(buf);
 }

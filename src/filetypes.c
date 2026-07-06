@@ -4,8 +4,8 @@ const char *c_hl_ext[] = { ".c", ".h", ".cpp", ".cxx", "hxx", ".hpp", NULL };
 const char *c_hl_kws[] = { "switch", "if", "while", "for", "break", "continue", "return",
                            "else", "struct", "union", "typedef", "static", "enum", "case",
                            "const", "constexpr", "default", "extern", "false", "true", "inline",
-                           "goto", "nullptr", "register", "restrict", "sizeof", "static",
-                           "static_assert", "thread_local", "typeof", "typeof_unequal",
+                           "goto", "nullptr", "register", "restrict", "sizeof", "static_assert",
+                           "thread_local", "typeof", "typeof_unequal",
                            "volatile",
                            
                            "int|", "long|", "double|", "float|", "char|", "unsigned|", "signed|",

@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include <sys/types.h>
 
-char *rows2string(ssize_t *buflen, bool trail);
+char *rows2string(ssize_t *buflen);
 void fileopen(const char *f);
 void save();
 
