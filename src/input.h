@@ -8,7 +8,6 @@
 typedef void (*callback)(char *, u32);
 
 char *prompt(const char *p, void (*cb)(char *, u32));
-void movecursor(int32_t k);
 void processkeypress();
 
 #endif

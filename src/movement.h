@@ -5,5 +5,6 @@
 
 void wordfoward();
 void wordbackward();
+void movecursor(i32 k);
 
 #endif
