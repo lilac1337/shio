@@ -3,6 +3,28 @@
 #include "row.h"
 #include "syntax.h"
 
+void resetselection() {
+    c.slctn.sidx = 0u;
+    c.slctn.eidx = 0u;
+    c.slctn.roff = 0;
+    c.slctn.r = 0u;
+
+    c.select = false;
+}
+
+void handleselection(u32 scx, u32 ecx, u32 r) {
+    if (!c.select)
+        return;
+
+    u32 srx = cx2rx(&c.r[r], scx);
+    u32 erx = cx2rx(&c.r[r], ecx);
+
+    c.slctn.sidx = c.slctn.sidx ? c.slctn.sidx : srx;
+    c.slctn.eidx = erx > 0 ? erx - 1u : 0u;
+    c.slctn.roff += (i32)c.slctn.r - (i32)r;
+    c.slctn.r = r;
+}
+
 // TODO: allow M-f and M-b to go into other rows
 void wordfoward() {
     row *r = getrow(c.cur.y);
@@ -20,7 +42,8 @@ loop:
         ++ccx;
         goto loop;
     }
-    
+
+    handleselection(c.cur.x, ccx, c.cur.y);
     c.cur.x = ccx;
     
     return;
@@ -76,8 +99,10 @@ void movecursor(i32 k) {
         
     case ARROW_RIGHT:
         if (r && c.cur.x < r->size) {
+            handleselection(c.cur.x, c.cur.x + 1u, c.cur.y);
             ++c.cur.x;
             ideal = c.cur.x;
+
             break;
         }
 
@@ -91,6 +116,8 @@ void movecursor(i32 k) {
     case ARROW_UP:
         if (!c.nrows)
             break;
+
+        resetselection();
         
         if (c.cur.y != 0)
             --c.cur.y;
@@ -107,6 +134,8 @@ void movecursor(i32 k) {
     case ARROW_DOWN:
         if (!c.nrows)
             break;
+
+        resetselection();
         
         if (c.cur.y < c.nrows - 1)
             ++c.cur.y;

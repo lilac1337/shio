@@ -52,6 +52,21 @@ typedef struct {
 } wsize;
 
 typedef struct {
+    size_t sidx; // these are indexes into the render array
+    size_t eidx; // not the char array
+    i32 roff;
+    u32 r;
+} selection;
+
+typedef struct {
+    // 8-byte aligned
+    row *r; // row array
+    char *fn; // file name
+    syntax *syn; // syntax
+    selection slctn; // selection
+    time_t time;
+
+    // 4-byte aligned
     cursor cur; // cursor pos
     wsize ws; // window size
     u32 roff; // row offset
@@ -60,12 +75,11 @@ typedef struct {
     u32 rx; // pos in row
     u32 dirty; // file has been modified
     u32 lno; // line number offset for cur
-    row *r; // row array
-    char *fn; // file name
-    char status[80];
-    time_t time;
-    syntax *syn; // syntax
+    bool select; // are we selecting text?
+
+    // cold
     struct termios origtios; // state of termios for exiting
+    char status[80];
 } config;
 
 extern config c;

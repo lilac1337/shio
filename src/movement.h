@@ -3,6 +3,8 @@
 
 #include "shio.h"
 
+void resetselection();
+void handleselection(u32 scx, u32 ecx, u32 r);
 void wordfoward();
 void wordbackward();
 void movecursor(i32 k);

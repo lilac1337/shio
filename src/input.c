@@ -189,6 +189,19 @@ void processkeypress() {
         wordbackward();
         break;
     }
+
+    case CTRL_KEY(' '): {
+        setstatus("%s", c.select ? "mark deactivated" : "mark set");
+
+        if (c.select) {
+            resetselection();
+            break;
+        }
+            
+        c.select = true;
+        
+        break;
+    }
                 
     case ARROW_UP:
     case ARROW_DOWN:

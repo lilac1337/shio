@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-const command commands[] = {{"save", csave}};
+const command commands[] = {{"save", csave}, {"help", chelp}};
 const size_t commandcnt = sizeof(commands) / sizeof(commands[0]);
 
 void commandcallback(char *q, u32 k) {
@@ -39,6 +39,11 @@ void executecommand() {
 
         return;
     }
+}
+
+// ccallback functions
+void chelp() {
+    setstatus("help: assume emacs keybinds, C-x C-c = quit, C-s = search, C-x C-s = save, &c.");
 }
 
 void csave() {

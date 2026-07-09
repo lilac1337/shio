@@ -46,14 +46,32 @@ void drawsyntaxhl(sv *txt, u32 frow, size_t len) {
     u8 *hl = &c.r[frow].hl[c.coff];
     u32 curcol = HL_NORMAL;
     size_t j;
+
+    //row *r = getrow(frow);
+    //u32 slcscx = cx2rx(&c.r[frow], (u32)c.slctn.sidx);
+    //u32 slcecx = cx2rx(&c.r[frow], (u32)c.slctn.eidx);
         
     for (j = 0; j < len; ++j) {
         if (iscntrl(ch[j])) {
             char sym = (ch[j] <= 26) ? '@' + ch[j] : '?';
                 
             svappend(txt, VT100SGR7, 4ul);
-            svappend(txt, &sym, 1);
-            svappend(txt, VT100SGR, 3);
+            svappend(txt, &sym, 1ul);
+            svappend(txt, VT100SGR, 3ul);
+
+            if (curcol != HL_NORMAL) {
+                char buf[16];
+                int clen = snprintf(buf, sizeof(buf), "\x1b%" PRIu32 "m", curcol);
+                svappend(txt, buf, (size_t)clen);
+            }
+
+            continue;
+        }
+
+        if (frow == c.slctn.r && c.select && c.slctn.sidx <= j && c.slctn.eidx >= j) {
+            svappend(txt, VT100SGR7, 4ul);
+            svappend(txt, &ch[j], 1ul);
+            svappend(txt, VT100SGR, 3ul);
 
             if (curcol != HL_NORMAL) {
                 char buf[16];

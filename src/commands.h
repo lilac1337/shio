@@ -13,6 +13,7 @@ void commandcallback(char *q, u32 k);
 void executecommand();
 
 // ccallback functions
+void chelp();
 void csave();
 
 extern const command commands[];

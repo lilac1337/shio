@@ -9,6 +9,10 @@ config c;
 void init() {
     c.cur.x = 0u;
     c.cur.y = 0u;
+    c.slctn.sidx = 0ul;
+    c.slctn.eidx = 0ul;
+    c.slctn.roff = 0;
+    c.slctn.r = 0u;
     c.roff = 0u;
     c.coff = 0u;
     c.nrows = 0u;
@@ -20,6 +24,7 @@ void init() {
     c.status[0] = '\0';
     c.time = 0;
     c.syn = NULL;
+    c.select = false;
     
     if (getwindowsize(&c.ws) == -1)
         die("getwindowsize in init");
@@ -34,7 +39,7 @@ int main(int argc, char *argv[]) {
     if (argc >= 2)
         fileopen(argv[1]);
 
-    setstatus("help: C-x C-s = save, C-x C-c = quit, C-s = search, M-x = commands");
+    setstatus("shio: do M-x help for the basics");
     
     while (true) {
         refreshscreen();
