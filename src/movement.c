@@ -3,11 +3,17 @@
 #include "row.h"
 #include "syntax.h"
 
+#include <errno.h>
+#include <stdlib.h>
+#include <string.h>
+
 void resetselection() {
     c.slctn.sidx = 0u;
     c.slctn.eidx = 0u;
     c.slctn.roff = 0;
-    c.slctn.r = 0u;
+    c.slctn.r = MAGIC_SELECTION; // rn this works because it's a very large
+                                 // number, so it'll never be reached, but it will
+                                 // have to be checked for eventually
 
     c.select = false;
 }
@@ -23,6 +29,37 @@ void handleselection(u32 scx, u32 ecx, u32 r) {
     c.slctn.eidx = erx > 0 ? erx - 1u : 0u;
     c.slctn.roff += (i32)c.slctn.r - (i32)r;
     c.slctn.r = r;
+}
+
+void copyselection() {
+    // this needs to be hardened with the c.slctn vars, prob abs value stuff
+    if (!c.select || c.slctn.r == MAGIC_SELECTION)
+        return;
+    
+    const size_t sz = c.slctn.eidx - c.slctn.sidx + 1u;
+
+    if (c.copy.len <= sz || c.copy.s == NULL)
+        c.copy.s = realloc(c.copy.s, sz + 1ul);
+
+    if (c.copy.s == NULL)
+        goto error;
+    
+    const row *r = getrow(c.slctn.r);
+    
+    if (r->rsize - c.slctn.sidx < sz)
+        return;
+
+    const size_t off = sizeof(char) * c.slctn.sidx;
+
+    strncpy(c.copy.s, r->render + off, sz);
+    c.copy.s[sz] = '\0';
+
+    setstatus("%s", c.copy.s);
+    
+    return;
+
+error:
+    setstatus("c.copy.s = NULL in copyselection, %s", strerror(errno));
 }
 
 // TODO: allow M-f and M-b to go into other rows
@@ -68,7 +105,8 @@ loop:
         --ccx;
         goto loop;
     }
-    
+
+    handleselection(c.cur.x, ccx, c.cur.y);
     c.cur.x = ccx;
     
     return;
@@ -85,6 +123,7 @@ void movecursor(i32 k) {
     switch (k) {
     case ARROW_LEFT:
         if (c.cur.x != 0) {
+            handleselection(c.cur.x, c.cur.x - 1u, c.cur.y);
             --c.cur.x;
             ideal = c.cur.x;
             break;

@@ -17,6 +17,7 @@
 #include <time.h>
 
 #include "filetypes.h"
+#include "string.h"
 #include "types.h"
 
 #define LIKELY(x) __builtin_expect(!!(x), 1)
@@ -58,11 +59,19 @@ typedef struct {
     u32 r;
 } selection;
 
+// this is the same struct as sz, but it's managed manually
+// instead of having the helper functions
+typedef struct {
+    char *s;
+    size_t len;
+} cpystr;
+
 typedef struct {
     // 8-byte aligned
     row *r; // row array
     char *fn; // file name
     syntax *syn; // syntax
+    cpystr copy;
     selection slctn; // selection
     time_t time;
 

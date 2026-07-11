@@ -1,4 +1,6 @@
 #include "shio.h"
+
+#include "string.h"
 #include "terminal.h"
 #include "output.h"
 #include "input.h"
@@ -25,6 +27,8 @@ void init() {
     c.time = 0;
     c.syn = NULL;
     c.select = false;
+    c.copy.len = 0ul;
+    c.copy.s = NULL;
     
     if (getwindowsize(&c.ws) == -1)
         die("getwindowsize in init");

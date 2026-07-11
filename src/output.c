@@ -11,7 +11,13 @@
 
 static inline void endrow(sv *txt) {
     svappend(txt, VT100EL, 3);
-    svappend(txt, "\r\n", 2); 
+    svappend(txt, "\r\n", 2);
+}
+
+static inline void appendnegative(sv *txt, const char *ch, size_t len) {
+    svappend(txt, VT100SGR7, 4ul);
+    svappend(txt, ch, len);
+    svappend(txt, VT100SGR, 3ul);
 }
 
 void scroll() {
@@ -41,6 +47,8 @@ void drawlinenum(sv *txt, u32 ln) {
     svappend(txt, VT100COLORDEFAULT, 5);
 }
 
+// TODO: we do a lot of 1 character appendations with a lot of unnecessary
+// resetting, eventually this should be rewritten to be more performant
 void drawsyntaxhl(sv *txt, u32 frow, size_t len) {
     char *ch = &c.r[frow].render[c.coff];
     u8 *hl = &c.r[frow].hl[c.coff];
@@ -54,11 +62,9 @@ void drawsyntaxhl(sv *txt, u32 frow, size_t len) {
     for (j = 0; j < len; ++j) {
         if (iscntrl(ch[j])) {
             char sym = (ch[j] <= 26) ? '@' + ch[j] : '?';
-                
-            svappend(txt, VT100SGR7, 4ul);
-            svappend(txt, &sym, 1ul);
-            svappend(txt, VT100SGR, 3ul);
 
+            appendnegative(txt, &sym, 1ul);
+                        
             if (curcol != HL_NORMAL) {
                 char buf[16];
                 int clen = snprintf(buf, sizeof(buf), "\x1b%" PRIu32 "m", curcol);
@@ -69,9 +75,7 @@ void drawsyntaxhl(sv *txt, u32 frow, size_t len) {
         }
 
         if (frow == c.slctn.r && c.select && c.slctn.sidx <= j && c.slctn.eidx >= j) {
-            svappend(txt, VT100SGR7, 4ul);
-            svappend(txt, &ch[j], 1ul);
-            svappend(txt, VT100SGR, 3ul);
+            appendnegative(txt, &ch[j], 1ul);
 
             if (curcol != HL_NORMAL) {
                 char buf[16];

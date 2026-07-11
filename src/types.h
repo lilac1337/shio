@@ -51,7 +51,8 @@ enum keys {
     PAGE_DOWN,
     META_X,
     META_F,
-    META_B
+    META_B,
+    META_W
 };
 
 enum highlight : u32 {
@@ -65,6 +66,10 @@ enum highlight : u32 {
     HL_NUMBER,
     HL_MATCH,
     HL_LINENUM
+};
+
+enum magic : u32 {
+    MAGIC_SELECTION = 0xDEADBABE
 };
 
 #endif

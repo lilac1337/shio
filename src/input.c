@@ -202,6 +202,12 @@ void processkeypress() {
         
         break;
     }
+
+    case META_W: {
+        copyselection();
+
+        break;
+    }
                 
     case ARROW_UP:
     case ARROW_DOWN:

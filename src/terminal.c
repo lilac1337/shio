@@ -73,6 +73,7 @@ i32 readkey() {
         case 'x': return META_X;
         case 'f': return META_F;
         case 'b': return META_B;
+        case 'w': return META_W;
         }
         
         if (read(STDIN_FILENO, &seq[1], 1) != 1l)
