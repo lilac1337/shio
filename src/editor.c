@@ -2,12 +2,12 @@
 
 #include "row.h"
 
-void editorinsertchar(i32 ch) {
-    if (c.cur.y == c.nrows)
+void editorinsertchar(row *r, u32 cx, u32 cy, i32 ch, bool at) {
+    if (cy == c.nrows)
         insertrow(c.nrows, "", 0);
 
-    rowinsertchar(&c.r[c.cur.y], c.cur.x, ch);
-    ++c.cur.x;
+    rowinsertchar(r, cx, ch);
+    c.cur.x = (at) ? c.cur.x + 1 : c.cur.x;
 }
 
 void editorinsertnl() {

@@ -52,7 +52,8 @@ enum keys {
     META_X,
     META_F,
     META_B,
-    META_W
+    META_W,
+    META_Y
 };
 
 enum highlight : u32 {

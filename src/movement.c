@@ -1,4 +1,5 @@
 #include "movement.h"
+#include "editor.h"
 #include "output.h"
 #include "row.h"
 #include "syntax.h"
@@ -31,6 +32,13 @@ void handleselection(u32 scx, u32 ecx, u32 r) {
     c.slctn.r = r;
 }
 
+void pasteselection(row *r, u32 cx, u32 cy) {
+    size_t i;
+    for (i = 0ul; i < c.copy.len; ++i) {
+        editorinsertchar(r, cx + (u32)i, cy, c.copy.s[i], true);
+    }
+}
+
 void copyselection() {
     // this needs to be hardened with the c.slctn vars, prob abs value stuff
     if (!c.select || c.slctn.r == MAGIC_SELECTION)
@@ -53,8 +61,9 @@ void copyselection() {
 
     strncpy(c.copy.s, r->render + off, sz);
     c.copy.s[sz] = '\0';
+    c.copy.len = sz;
 
-    setstatus("%s", c.copy.s);
+    setstatus("copied \"%s\"", c.copy.s);
     
     return;
 

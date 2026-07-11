@@ -7,6 +7,7 @@
 #include "output.h"
 #include "row.h"
 #include "search.h"
+#include "shio.h"
 #include "terminal.h"
 
 #include <ctype.h>
@@ -208,6 +209,12 @@ void processkeypress() {
 
         break;
     }
+
+    case CTRL_KEY('y'): {
+        pasteselection(&c.r[c.cur.y], c.cur.x, c.cur.y);
+
+        break;
+    }
                 
     case ARROW_UP:
     case ARROW_DOWN:
@@ -221,7 +228,7 @@ void processkeypress() {
         break;
 
     default:
-        editorinsertchar(ch);
+        editorinsertchar(&c.r[c.cur.y], c.cur.x, c.cur.y, ch, true);
         break;
     }
 
