@@ -2,11 +2,11 @@
 
 #include "row.h"
 
-void editorinsertchar(row *r, u32 cx, u32 cy, i32 ch, bool at) {
-    if (cy == c.nrows)
+void editorinsertchar(u32 cx, u32 cy, i32 ch, bool at) {
+    if (c.cur.y == c.nrows)
         insertrow(c.nrows, "", 0);
 
-    rowinsertchar(r, cx, ch);
+    rowinsertchar(&c.r[cy], cx, ch);
     c.cur.x = (at) ? c.cur.x + 1 : c.cur.x;
 }
 
@@ -32,23 +32,23 @@ end:
     c.cur.x = 0;
 }
 
-void editordelchar() {
-    if (c.cur.y == c.nrows || (c.cur.y == 0 && c.cur.x == 0))
+void editordelchar(row *r, u32 cx, u32 cy, bool at) {
+    if (cy == c.nrows || (cy == 0 && cx == 0))
         return;
 
-    row *r = &c.r[c.cur.y];
+    //row *r = &c.r[c.cur.y];
 
-    if (c.cur.x == 0) {
-        c.cur.x = (u32)c.r[c.cur.y - 1].size;
+    if (cx == 0) {
+        c.cur.x = (at) ? (u32)c.r[cy - 1u].size : c.cur.x;
 
-        rowappendstring(&c.r[c.cur.y - 1], r->chars, r->size);
-        delrow(c.cur.y);
+        rowappendstring(&c.r[cy - 1u], r->chars, r->size);
+        delrow(cy);
 
-        --c.cur.y;
+        c.cur.y = (at) ? c.cur.y - 1u : c.cur.y;
 
         return;
     }
     
-    rowdelchar(r, c.cur.x - 1);
-    --c.cur.x;
+    rowdelchar(r, cx - 1u);
+    c.cur.x = (at) ? c.cur.x - 1u : c.cur.x;
 }

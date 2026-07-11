@@ -155,7 +155,7 @@ void processkeypress() {
         if (ch == DEL_KEY)
             movecursor(ARROW_RIGHT);
 
-        editordelchar();
+        editordelchar(&c.r[c.cur.y], c.cur.x, c.cur.y, true);
         
         break;
 
@@ -211,7 +211,13 @@ void processkeypress() {
     }
 
     case CTRL_KEY('y'): {
-        pasteselection(&c.r[c.cur.y], c.cur.x, c.cur.y);
+        pasteselection(c.cur.x, c.cur.y);
+
+        break;
+    }
+
+    case CTRL_KEY('w'): {
+        cutselection();
 
         break;
     }
@@ -228,7 +234,7 @@ void processkeypress() {
         break;
 
     default:
-        editorinsertchar(&c.r[c.cur.y], c.cur.x, c.cur.y, ch, true);
+        editorinsertchar(c.cur.x, c.cur.y, ch, true);
         break;
     }
 

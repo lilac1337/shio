@@ -32,6 +32,9 @@
 #define SHIO_TAB_STOP 4
 #define SHIO_QUIT_TIMES 3
 
+// most of these should probably go in types.h
+// or types.h should be removed
+
 typedef struct {
     u32 idx;
     size_t size;
@@ -61,6 +64,9 @@ typedef struct {
 
 // this is the same struct as sz, but it's managed manually
 // instead of having the helper functions
+// --- thinking about it more, we either don't need len
+// or don't need the \0 at the end of s; we should remove one
+// eventually
 typedef struct {
     char *s;
     size_t len;

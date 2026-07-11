@@ -5,7 +5,8 @@
 
 void resetselection();
 void handleselection(u32 scx, u32 ecx, u32 r);
-void pasteselection(row *r, u32 cx, u32 cy);
+void cutselection();
+void pasteselection(u32 cx, u32 cy);
 void copyselection();
 void wordfoward();
 void wordbackward();

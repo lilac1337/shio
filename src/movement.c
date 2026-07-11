@@ -32,10 +32,21 @@ void handleselection(u32 scx, u32 ecx, u32 r) {
     c.slctn.r = r;
 }
 
-void pasteselection(row *r, u32 cx, u32 cy) {
+void cutselection() {
+    copyselection();
+
+    const size_t diff = c.slctn.eidx - c.slctn.sidx + 1ul;
+    row *r = getrow(c.slctn.r);
+    u32 i;
+    for (i = 0; i < diff; ++i) {
+        editordelchar(r, i + (u32)c.slctn.sidx, c.slctn.r, true);
+    }
+}
+
+void pasteselection(u32 cx, u32 cy) {
     size_t i;
     for (i = 0ul; i < c.copy.len; ++i) {
-        editorinsertchar(r, cx + (u32)i, cy, c.copy.s[i], true);
+        editorinsertchar(cx + (u32)i, cy, c.copy.s[i], true);
     }
 }
 

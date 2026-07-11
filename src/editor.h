@@ -3,8 +3,8 @@
 
 #include "shio.h"
 
-void editorinsertchar(row *r, u32 cx, u32 cy, i32 ch, bool at);
+void editorinsertchar(u32 cx, u32 cy, i32 ch, bool at);
 void editorinsertnl();
-void editordelchar();
+void editordelchar(row *r, u32 cx, u32 cy, bool at);
 
 #endif
