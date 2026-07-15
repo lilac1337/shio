@@ -74,7 +74,7 @@ void drawsyntaxhl(sv *txt, u32 frow, size_t len) {
             continue;
         }
 
-        if (frow == c.slctn.r && c.select && c.slctn.sidx <= j && c.slctn.eidx >= j) {
+        if (frow == c.slctn.rnum && c.select && c.slctn.sidx <= j && c.slctn.eidx >= j) {
             appendnegative(txt, &ch[j], 1ul);
 
             if (curcol != HL_NORMAL) {

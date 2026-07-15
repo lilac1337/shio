@@ -59,7 +59,7 @@ typedef struct {
     size_t sidx; // these are indexes into the render array
     size_t eidx; // not the char array
     i32 roff;
-    u32 r;
+    u32 rnum;
 } selection;
 
 // this is the same struct as sz, but it's managed manually

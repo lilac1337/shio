@@ -14,7 +14,7 @@ void init() {
     c.slctn.sidx = 0ul;
     c.slctn.eidx = 0ul;
     c.slctn.roff = 0;
-    c.slctn.r = 0u;
+    c.slctn.rnum = 0u;
     c.roff = 0u;
     c.coff = 0u;
     c.nrows = 0u;

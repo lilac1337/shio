@@ -12,7 +12,7 @@ void resetselection() {
     c.slctn.sidx = 0u;
     c.slctn.eidx = 0u;
     c.slctn.roff = 0;
-    c.slctn.r = MAGIC_SELECTION; // rn this works because it's a very large
+    c.slctn.rnum = MAGIC_SELECTION; // rn this works because it's a very large
                                  // number, so it'll never be reached, but it will
                                  // have to be checked for eventually
 
@@ -28,18 +28,18 @@ void handleselection(u32 scx, u32 ecx, u32 r) {
 
     c.slctn.sidx = c.slctn.sidx ? c.slctn.sidx : srx;
     c.slctn.eidx = erx > 0 ? erx - 1u : 0u;
-    c.slctn.roff += (i32)c.slctn.r - (i32)r;
-    c.slctn.r = r;
+    c.slctn.roff += (i32)c.slctn.rnum - (i32)r;
+    c.slctn.rnum = r;
 }
 
 void cutselection() {
     copyselection();
 
     const size_t diff = c.slctn.eidx - c.slctn.sidx + 1ul;
-    row *r = getrow(c.slctn.r);
+    row *r = getrow(c.slctn.rnum);
     u32 i;
     for (i = 0; i < diff; ++i) {
-        editordelchar(r, i + (u32)c.slctn.sidx, c.slctn.r, true);
+        editordelchar(r, i + (u32)c.slctn.sidx, c.slctn.rnum, true);
     }
 }
 
@@ -52,7 +52,7 @@ void pasteselection(u32 cx, u32 cy) {
 
 void copyselection() {
     // this needs to be hardened with the c.slctn vars, prob abs value stuff
-    if (!c.select || c.slctn.r == MAGIC_SELECTION)
+    if (!c.select || c.slctn.rnum == MAGIC_SELECTION)
         return;
     
     const size_t sz = c.slctn.eidx - c.slctn.sidx + 1u;
@@ -63,7 +63,7 @@ void copyselection() {
     if (c.copy.s == NULL)
         goto error;
     
-    const row *r = getrow(c.slctn.r);
+    const row *r = getrow(c.slctn.rnum);
     
     if (r->rsize - c.slctn.sidx < sz)
         return;
