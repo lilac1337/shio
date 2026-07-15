@@ -7,7 +7,7 @@
 #include "output.h"
 #include "row.h"
 #include "search.h"
-#include "shio.h"
+#include "selection.h"
 #include "terminal.h"
 
 #include <ctype.h>
