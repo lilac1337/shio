@@ -52,3 +52,13 @@ void editordelchar(row *r, u32 cx, u32 cy, bool at) {
     rowdelchar(r, cx - 1u);
     c.cur.x = (at) ? c.cur.x - 1u : c.cur.x;
 }
+
+void editorkillrow(u32 cx, u32 cy) {
+    row *r = getrow(cy);
+    u32 i;
+    size_t diff = r->size - cx;
+    
+    for (i = 0; i < diff; ++i) {
+        editordelchar(r, cx + 1u, cy, false);
+    }
+}

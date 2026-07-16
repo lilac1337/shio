@@ -6,5 +6,6 @@
 void editorinsertchar(u32 cx, u32 cy, i32 ch, bool at);
 void editorinsertnl();
 void editordelchar(row *r, u32 cx, u32 cy, bool at);
+void editorkillrow(u32 cx, u32 cy);
 
 #endif

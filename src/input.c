@@ -221,6 +221,12 @@ void processkeypress() {
 
         break;
     }
+
+    case CTRL_KEY('k'): {
+        editorkillrow(c.cur.x, c.cur.y);
+
+        break;
+    }
                 
     case ARROW_UP:
     case ARROW_DOWN:

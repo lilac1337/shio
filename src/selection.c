@@ -3,6 +3,7 @@
 #include "editor.h"
 #include "row.h"
 #include "output.h"
+#include "types.h"
 
 #include <errno.h>
 
@@ -30,14 +31,17 @@ void handleselection(u32 scx, u32 ecx, u32 r) {
     c.slctn.rnum = r;
 }
 
+// TODO: cutting with c.slctn.sidx = 0 causes a crash from cx2rx in scroll
 void cutselection() {
     copyselection();
 
     const size_t diff = c.slctn.eidx - c.slctn.sidx + 1ul;
     row *r = getrow(c.slctn.rnum);
     u32 i;
+    u32 cx = rx2cx(r, (u32)c.slctn.sidx);
+    
     for (i = 0; i < diff; ++i) {
-        editordelchar(r, i + (u32)c.slctn.sidx, c.slctn.rnum, true);
+        editordelchar(r, cx + 1u, c.slctn.rnum, true);
     }
 }
 
