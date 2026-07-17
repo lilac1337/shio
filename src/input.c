@@ -8,6 +8,7 @@
 #include "row.h"
 #include "search.h"
 #include "selection.h"
+#include "shio.h"
 #include "terminal.h"
 
 #include <ctype.h>
@@ -170,10 +171,12 @@ void processkeypress() {
         break;
     }
 
+    case CTRL_KEY('a'):
     case HOME_KEY:
         c.cur.x = 0;
         break;
 
+    case CTRL_KEY('e'):
     case END_KEY:
         if (c.cur.y < c.nrows)
             c.cur.x = (u32)c.r[c.cur.y].size;
@@ -228,7 +231,7 @@ void processkeypress() {
 
         break;
     }
-                
+    
     case ARROW_UP:
     case ARROW_DOWN:
     case ARROW_LEFT:

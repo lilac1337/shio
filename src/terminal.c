@@ -127,8 +127,6 @@ i32 readkey() {
     case CTRL_KEY('n'): return ARROW_DOWN;
     case CTRL_KEY('f'): return ARROW_RIGHT;
     case CTRL_KEY('b'): return ARROW_LEFT;
-    case CTRL_KEY('a'): return HOME_KEY;
-    case CTRL_KEY('e'): return END_KEY;
     }
 
     return ch;
