@@ -129,15 +129,23 @@ void processkeypress() {
         setstatus("cancelled");
         break;
 
-    case HOME_KEY:
-        c.cur.x = 0;
-        break;
+    case CTRL_KEY('y'): {
+        pasteselection(c.cur.x, c.cur.y);
 
-    case END_KEY:
-        if (c.cur.y < c.nrows)
-            c.cur.x = (u32)c.r[c.cur.y].size;
-        
         break;
+    }
+
+    case CTRL_KEY('w'): {
+        cutselection();
+
+        break;
+    }
+
+    case CTRL_KEY('k'): {
+        editorkillrow(c.cur.x, c.cur.y);
+
+        break;
+    }
 
     case CTRL_KEY('s'):
         if (lch == CTRL_KEY('x')) {
@@ -149,10 +157,34 @@ void processkeypress() {
         search();
         break;
 
+    case CTRL_KEY(' '): {
+        setstatus("%s", c.select ? "mark deactivated" : "mark set");
+
+        if (c.select) {
+            resetselection();
+            break;
+        }
+            
+        c.select = true;
+        
+        break;
+    }
+
+    case HOME_KEY:
+        c.cur.x = 0;
+        break;
+
+    case END_KEY:
+        if (c.cur.y < c.nrows)
+            c.cur.x = (u32)c.r[c.cur.y].size;
+        
+        break;
+
     case BACKSPACE:
     case CTRL_KEY('h'):
+    case CTRL_KEY('d'):
     case DEL_KEY:
-        if (ch == DEL_KEY)
+        if (ch == DEL_KEY || ch == CTRL_KEY('d'))
             movecursor(ARROW_RIGHT);
 
         editordelchar(&c.r[c.cur.y], c.cur.x, c.cur.y, true);
@@ -191,39 +223,8 @@ void processkeypress() {
         break;
     }
 
-    case CTRL_KEY(' '): {
-        setstatus("%s", c.select ? "mark deactivated" : "mark set");
-
-        if (c.select) {
-            resetselection();
-            break;
-        }
-            
-        c.select = true;
-        
-        break;
-    }
-
     case META_W: {
         copyselection();
-
-        break;
-    }
-
-    case CTRL_KEY('y'): {
-        pasteselection(c.cur.x, c.cur.y);
-
-        break;
-    }
-
-    case CTRL_KEY('w'): {
-        cutselection();
-
-        break;
-    }
-
-    case CTRL_KEY('k'): {
-        editorkillrow(c.cur.x, c.cur.y);
 
         break;
     }
