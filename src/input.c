@@ -5,7 +5,6 @@
 #include "file.h"
 #include "movement.h"
 #include "output.h"
-#include "row.h"
 #include "search.h"
 #include "selection.h"
 #include "shio.h"
