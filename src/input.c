@@ -4,14 +4,17 @@
 #include "editor.h"
 #include "file.h"
 #include "movement.h"
+#include "notmath.h"
 #include "output.h"
 #include "search.h"
 #include "selection.h"
 #include "shio.h"
 #include "terminal.h"
+#include "vec.h"
 
 #include <ctype.h>
 #include <errno.h>
+#include <limits.h>
 #include <stdlib.h>
 
 char *prompt(const char *p, callback cb) {
@@ -92,7 +95,8 @@ void processkeypress() {
     // emacs-like chords, it was unironically revealed to me in a dream
     static u32 qt = SHIO_QUIT_TIMES;
     static i32 lch = 0;
-    
+    static vu32 unums = { NULL, 0ul, 0ul };
+    static bool u = false;
     i32 ch = readkey();
 
     switch (ch) {
@@ -126,6 +130,8 @@ void processkeypress() {
 
     case CTRL_KEY('g'):
         qt = SHIO_QUIT_TIMES;
+        u = false;
+        vu32clear(&unums);
         setstatus("cancelled");
         break;
 
@@ -166,6 +172,14 @@ void processkeypress() {
         }
             
         c.select = true;
+        
+        break;
+    }
+
+    case CTRL_KEY('u'): {
+        setstatus("C-u ?");
+        vu32clear(&unums);
+        u = true;
         
         break;
     }
@@ -243,7 +257,28 @@ void processkeypress() {
         break;
 
     default:
-        editorinsertchar(c.cur.x, c.cur.y, ch, true);
+        size_t n = 1ul;
+        size_t i;
+        
+        if (u && ch <= CHAR_MAX && isdigit(ch)) {
+            vu32push(&unums, (u32)(ch - '0'));
+            setstatus("C-u += %" PRIu32, unums.d[unums.n - 1ul]);
+            break;
+        }
+
+        if (u) {
+            n = 0ul;
+            
+            for (i = 0ul; i < unums.n; ++i) {
+                n += vu32at(&unums, i) * u32pow(10u, (u32)unums.n - (u32)i - 1u);
+            }
+        }
+
+        for (i = 0ul; i < n; ++i) {
+            editorinsertchar(c.cur.x, c.cur.y, ch, true);
+        }
+        
+        u = false;
         break;
     }
 
